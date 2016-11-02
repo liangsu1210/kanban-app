@@ -8,6 +8,10 @@
     "start": {
       "presets": [
         "react-hmre"
+      ],
+      "plugins": [
+        "react-html-attrs",
+        "typecheck"
       ]
     }
   }

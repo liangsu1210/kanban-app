@@ -1,7 +1,7 @@
 const path = require('path');
 const merge = require('webpack-merge');
 const validate = require('webpack-validator');
-
+const Joi = require('webpack-validator').Joi
 const parts = require('./libs/parts');
 
 const TARGET = process.env.npm_lifecycle_event;
@@ -9,7 +9,7 @@ const ENABLE_POLLING = process.env.ENABLE_POLLING;
 const PATHS = {
   app: path.join(__dirname, 'app'),
   style: [
-    path.join(__dirname, 'app', 'main.css')
+    path.join(__dirname, 'app', 'main.styl')
   ],
   build: path.join(__dirname, 'build'),
   test: path.join(__dirname, 'tests')
@@ -110,6 +110,12 @@ switch(TARGET) {
     );
 }
 
+// extend the validation
+const SchemaExtension = Joi.object({
+  stylus: Joi.any()
+})
+
 module.exports = validate(config, {
-  quiet: true
+  quiet: true,
+  schemaExtension: SchemaExtension
 });

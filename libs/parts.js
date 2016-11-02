@@ -3,6 +3,7 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const NpmInstallPlugin = require('npm-install-webpack-plugin');
+const poststylus = require('poststylus');
 
 exports.indexTemplate = function(options) {
   return {
@@ -125,10 +126,20 @@ exports.setupCSS = function(paths) {
     module: {
       loaders: [
         {
+          test: /\.styl$/,
+          loader: 'style-loader!css-loader!stylus-loader',
+          include: paths
+        },
+        {
           test: /\.css$/,
           loaders: ['style', 'css'],
           include: paths
         }
+      ]
+    },
+    stylus: {
+      use: [
+        poststylus([ 'autoprefixer', 'rucksack-css' ])
       ]
     }
   };
@@ -193,15 +204,25 @@ exports.extractCSS = function(paths) {
       loaders: [
         // Extract CSS during build
         {
+          test: /\.styl$/,
+          loader: ExtractTextPlugin.extract('style', 'css!stylus'),
+          include: paths
+        },
+        {
           test: /\.css$/,
           loader: ExtractTextPlugin.extract('style', 'css'),
           include: paths
         }
       ]
     },
+    stylus: {
+      use: [
+        poststylus([ 'autoprefixer', 'rucksack-css' ])
+      ]
+    },
     plugins: [
       // Output extracted CSS to a file
-      new ExtractTextPlugin('[name].[chunkhash].css')
+      new ExtractTextPlugin('[name].[chunkhash].css'),
     ]
   };
 }
